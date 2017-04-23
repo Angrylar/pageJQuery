@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>page</title>
+    <style>
+      *{
+        margin: 0;
+        padding: 0;
+      }
+      ul,li{
+        list-style: none;
+      }
+      .page-area{
+        width: 100%;
+        height: 40px;
+        margin: 0 auto;
+      }
+      .page-area .page-btn {
+        line-height: 36px;
+        margin: 6px;
+        vertical-align: middle;
+      }
+      .page-area .go-index{
+
+      }
+      .page-area .page-num-ul{
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .page-area .page-num-ul li{
+        float: left;
+        width: 36px;
+        height: 36px;
+        line-height: 36px;
+        border: 1px solid #dcdcdc;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+      }
+      .currentPage{
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-area">
+      <span class="page-btn go-index">首页</span>
+      <span class="page-btn go-back">上一页</span>
+      <ul class="page-num-ul">
+
+      </ul>
+      <span class="page-btn go-next">下一页</span>
+      <span class="page-btn go-last">尾页</span>
+    </div>
+  <script type="text/javascript" src="js\jquery-1.12.3.js"></script>
+  <script>
+    $.ajax({
+      type:"get",
+      url:"data.json",
+      data:"",
+      async:"true",
+      success:function(resp){
+        /*resp.pageRespDto.currentPage
+        resp.pageRespDto.end
+        resp.pageRespDto.totalPage*/
+        console.log(resp)
+        var pageTempString = "";
+
+        if (parseInt(resp.result.pageRespDto.currentPage) == "1") {
+          $(".go-index").hide();
+          $(".go-back").hide();
+        } else if (resp.result.pageRespDto.end == true) {
+          $(".go-next").hide();
+          $(".go-last").hide();
+        }
+
+
+        if (parseInt(resp.result.pageRespDto.totalPage) < 6) {
+
+          for (let i = 0; i < parseInt(resp.result.pageRespDto.totalPage); i++) {
+            pageTempString += '<li>'+i+1+'</li>';
+          }
+
+          $(".page-num-ul").html("");
+          $(".page-num-ul").append(pageTempString);
+
+        } else if (parseInt(resp.result.pageRespDto.totalPage) >= 6 && (parseInt(resp.result.pageRespDto.currentPage) + 4) < parseInt(resp.result.pageRespDto.totalPage)) {
+console.log('asadfasdfsdf')
+          for (let i = 0; i < 3; i++) {
+
+            pageTempString += '<li>' + (parseInt(resp.result.pageRespDto.currentPage) + i) + '</li>'
+
+          }
+          pageTempString += "<li style='border: none;'>...</li>";
+          pageTempString += "<li>" + resp.result.pageRespDto.totalPage + "</li>"
+          $(".page-num-ul").html("");
+          $(".page-num-ul").append(pageTempString);
+        } else if (parseInt(resp.result.pageRespDto.totalPage) >= 6 && (parseInt(resp.result.pageRespDto.currentPage) + 4) >= parseInt(resp.result.pageRespDto.totalPage)) {
+
+          pageTempString += "<li>1</li><li style='border: none;'>...</li>"
+
+          for (let i = parseInt(resp.result.pageRespDto.currentPage); i < parseInt(resp.result.pageRespDto.totalPage) + 1; i++) {
+            pageTempString += '<li>'+i+'</li>';
+          }
+
+          $(".page-num-ul").html("");
+          $(".page-num-ul").append(pageTempString);
+
+        }
+      }
+    })
+  </script>
+  </body>
+</html>
